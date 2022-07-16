@@ -17,10 +17,10 @@
             android:name=".DataInsertActivity"
             android:exported="false" />
         <activity
-            android:name=".SpActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SpActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

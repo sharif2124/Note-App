@@ -35,6 +35,7 @@ ActivityMainBinding binding;
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this,DataInsertActivity.class);
+            intent.putExtra("type","addMode");
             startActivityForResult(intent,1);
         }
     });
@@ -59,7 +60,20 @@ ActivityMainBinding binding;
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-             noteViewModel.delete(adapter.getNote(viewHolder.getAdapterPosition()));
+                if(direction==ItemTouchHelper.RIGHT) {
+                    noteViewModel.delete(adapter.getNote(viewHolder.getAdapterPosition()));
+                    Toast.makeText(MainActivity.this, "Note Delete", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(MainActivity.this,DataInsertActivity.class);
+                    intent.putExtra("type","update");
+                    intent.putExtra("title",adapter.getNote(viewHolder.getAdapterPosition()).getTitle());
+                    intent.putExtra("disp",adapter.getNote(viewHolder.getAdapterPosition()).getDisp());
+                    intent.putExtra("id",adapter.getNote(viewHolder.getAdapterPosition()).getId());
+                    startActivityForResult(intent,2);
+
+
+                }
             }
         }).attachToRecyclerView(binding.Rv);
     }
@@ -73,6 +87,14 @@ ActivityMainBinding binding;
            Note note = new Note(title,Descriptions);
            noteViewModel.insert(note);
            Toast.makeText(this,"Note Added",Toast.LENGTH_LONG).show();
+       }
+       else if(requestCode==2){
+           String title = data.getStringExtra("title");
+           String Descriptions = data.getStringExtra("disp");
+           Note note = new Note(title,Descriptions);
+           note.setId(data.getIntExtra("id",0));
+           noteViewModel.update(note);
+           Toast.makeText(MainActivity.this, "note updated..", Toast.LENGTH_SHORT).show();
        }
     }
 }
