@@ -2,7 +2,9 @@ package com.example.noteappdemo;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.example.noteappdemo.databinding.ActivityDataInsertBinding;
 import com.example.noteappdemo.databinding.ActivityMainBinding;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +35,18 @@ ActivityMainBinding binding;
             startActivityForResult(intent,1);
         }
     });
+
+        binding.Rv.setLayoutManager(new LinearLayoutManager(this));
+        binding.Rv.setHasFixedSize(true);
+        RVAdapter adapter = new RVAdapter();
+        binding.Rv.setAdapter(adapter);
+
+        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                adapter.submitList(notes);
+            }
+        });
     }
 
     @Override
